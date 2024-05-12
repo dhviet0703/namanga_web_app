@@ -10,6 +10,7 @@ rasa.db*
 events.db*
 tests/data/parse_dialogues.pkl
 tests/data/records.pkl
+/.streamlit/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
