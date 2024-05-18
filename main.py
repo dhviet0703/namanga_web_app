@@ -1,43 +1,38 @@
 import streamlit as st
-from auth.register import signup
+from streamlit_cookies_manager import EncryptedCookieManager
+
+from pages.home import home_page
+from pages.login import login_page
+from settings.config import cfg
+
+cookies = EncryptedCookieManager(prefix='my_app_', password='jhasjhchasjhsa_1133_ahhsacsa')
+
+if not cookies.ready():
+    st.stop()
 
 
-# conn = st.connection("postgresql", type="sql")
-#
-# df = conn.query('SELECT * FROM public.engine_user;', ttl="10m")
-#
-# for row in df.itertuples():
-#     st.write(f"{row.email} has password :{row.password}")
+def main():
+    st.sidebar.title("Main Menu")
+    st.sidebar.image(cfg.image_path, use_column_width=True)
+    if cookies.get('logged_in') == 'True':
+        menu = ["Home", "Quản lý Manga", "Quản lý User"]
+        choice = st.sidebar.selectbox("Menu", menu)
+
+        if choice == "Home":
+            home_page()
+        elif choice == "Quản lý Manga":
+            pass
+        elif choice == "Quản lý User":
+            pass
+
+        if st.sidebar.button('Logout'):
+            cookies['logged_in'] = 'False'
+            cookies.save()
+            st.experimental_rerun()
+
+    else:
+        login_page(cookies)
 
 
-st.title("Ứng dụng đăng nhập")
-
-menu = ["Đăng ký", "Đăng nhập"]
-choice = st.sidebar.selectbox("Menu", menu)
-
-if choice == "Đăng ký":
-    st.subheader("Đăng ký")
-    username = st.text_input("Username")
-    email = st.text_input("Email")
-    password = st.text_input("Password", type="password")
-    re_password = st.text_input("Re Password", type="password")
-    if st.button("Đăng ký"):
-        st.write(signup(username, email, password, re_password))
-        # st.success("Đăng ký thành công")
-
-# elif choice == "Đăng nhập":
-#     st.subheader("Đăng nhập")
-#     email = st.text_input("Email")
-#     password = st.text_input("Mật khẩu", type="password")
-#     if st.button("Đăng nhập"):
-#         if login(email, password):
-#             st.success("Đăng nhập thành công")
-#         else:
-#             st.error("Email hoặc mật khẩu không chính xác")
-
-# st.title("Hello World")
-# st.write("This is a sample app")
-# x = st.text_input("Enter a text")
-# if x:
-#     st.write(x)
-#
+if __name__ == "__main__":
+    main()
