@@ -1,8 +1,4 @@
-import streamlit as st
-
-from settings.config import cfg
-from call_api.auth import login
-from call_api.auth.register import signup, verify
+from pages import *
 
 
 def login_page(cookies):
