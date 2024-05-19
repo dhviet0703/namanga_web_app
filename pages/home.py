@@ -12,26 +12,47 @@ def home_page(cookies):
 def load_mangas(cookies):
     manga = get_manga_data()
 
-    st.markdown('<div style="display: flex; flex-wrap: wrap;">', unsafe_allow_html=True)
+    st.markdown(
+        """
+        <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;  /* Giảm khoảng cách giữa các phần tử */
+            padding: 10px;
+        }
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;  /* Tùy chọn: Thêm màu nền cho các mục */
+            border-radius: 8px;  /* Tùy chọn: Bo tròn góc cạnh */
+        }
+        .grid-item img {
+            width: 100%;
+            height: auto;
+            max-height: 200px;  /* Điều chỉnh chiều cao tối đa của hình ảnh */
+            object-fit: cover;  /* Giúp hình ảnh vừa với khung mà không bị biến dạng */
+            border-radius: 4px;  /* Tùy chọn: Bo tròn góc hình ảnh */
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
-    for row in manga.itertuples():
-        name = row.name
-        author = row.author
-        image_src = row.image
+    st.markdown('<div class="grid-container">', unsafe_allow_html=True)
 
-        st.markdown('<div style="display: flex; flex-direction: row;">', unsafe_allow_html=True)
+    for item in manga.itertuples():
+        name = item.name
+        image_src = item.image
 
-        st.markdown('<div style="margin-right: 20px;">', unsafe_allow_html=True)
+        st.markdown('<div class="grid-item">', unsafe_allow_html=True)
         image = Image.open(image_src)
-        image.thumbnail((200, 200))
-        st.image(image, use_column_width=False)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        st.markdown('<div style="flex-grow: 1;">', unsafe_allow_html=True)
-        st.write(f"Name: {name}")
-        st.write(f"Author: {author}")
-        st.markdown('</div>', unsafe_allow_html=True)
-
+        st.image(image, use_column_width=True)
+        st.write(f"{name}")
+        st.write("10 Lượt xem")
         st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)

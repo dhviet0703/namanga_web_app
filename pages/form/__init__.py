@@ -6,5 +6,5 @@ from settings.config import cfg
 from settings.connect import *
 from call_api.auth.login import *
 from call_api.auth.login import login
-from call_api.auth.register import signup, verify
-from pages.form.manga import *
+from call_api.manga import *
+
