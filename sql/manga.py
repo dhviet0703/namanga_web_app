@@ -1,4 +1,4 @@
-from pages import *
+from sql import *
 
 
 @st.cache_data
