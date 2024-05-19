@@ -7,4 +7,3 @@ from settings.connect import *
 from call_api.auth.login import *
 from call_api.auth.login import login
 from call_api.manga import *
-
