@@ -12,6 +12,7 @@ psycopg2-binary = "2.9.9"
 sqlalchemy = "2.0.30"
 passlib = "1.7.4"
 streamlit-cookies-manager = "0.2.0"
+streamlit-extras = "0.4.2"
 
 [build-system]
 requires = ["poetry-core"]

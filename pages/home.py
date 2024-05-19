@@ -3,9 +3,6 @@ from pages import *
 
 def home_page(cookies):
     st.write("Welcome to the home page!")
-    if st.button('Reset Page'):
-        st.cache_data.clear()
-        st.experimental_rerun()
     load_mangas(cookies)
 
 
@@ -27,7 +24,6 @@ def load_mangas(cookies):
             align-items: center;
             text-align: center;
             padding: 10px;
-            background-color: #f0f0f0;  /* Tùy chọn: Thêm màu nền cho các mục */
             border-radius: 8px;  /* Tùy chọn: Bo tròn góc cạnh */
         }
         .grid-item img {
@@ -50,9 +46,10 @@ def load_mangas(cookies):
 
         st.markdown('<div class="grid-item">', unsafe_allow_html=True)
         image = Image.open(image_src)
-        st.image(image, use_column_width=True)
+        image.thumbnail((200, 200))
+        st.image(image, use_column_width=False)
         st.write(f"{name}")
-        st.write("10 Lượt xem")
+        st.write(f"{item.id}")
         st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
