@@ -12,9 +12,7 @@ def add_new_manga(cookies):
         image_file = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
 
         if st.form_submit_button(label="Add Manga"):
-            # genres_list = [genre.strip() for genre in genres.split(",")]
             add_manga_api(name, author, introduction, genres, image_file, cookies)
-            # st.write(name, author, introduction, genres, image_file)
 
 
 def update_manga(cookies):
@@ -57,10 +55,108 @@ def delete_manga(cookies):
 
         if confirm_button:
             delete_manga_api(st.session_state.id_manga_to_delete, cookies)
-            st.session_state.confirm_delete = False  # Reset trạng thái sau khi xóa
+            st.session_state.confirm_delete = False
         elif cancel_button:
             st.info("Hành động xóa đã bị hủy")
-            st.session_state.confirm_delete = False  # Reset trạng thái khi hủy
+            st.session_state.confirm_delete = False
 
 
+def display_manga_info(manga, cookies):
+    for index, row in manga.iterrows():
+        name = row['name']
+        image = Image.open(row['image']).resize((300, 400))
+
+        col1, col2 = st.columns([1, 2])
+
+        with col1:
+            st.image(image, use_column_width=True)
+
+        with col2:
+            st.write(f"**ID:** {row['id']}")
+            st.write(f"**Tên:** {name}")
+            st.write(f"**Tổng số chương:** {row['total_chapter']}")
+            st.write(f"**Lượt thích:** {row['like']}")
+            st.write(f"**Đánh giá:** {row['rating']}/5")
+            st.write("---")
+            if st.button("Show Details", key=index):
+                st.experimental_set_query_params(name=name)
+
+
+def display_manga_details(name, manga, cookies):
+    row = manga[manga['name'] == name].iloc[0]
+    image = Image.open(row['image']).resize((500, 800))
+    if st.button("Back to List"):
+        st.experimental_set_query_params()
+    col1, col2, col3 = st.columns([1.5, 2, 3])
+
+    with col1:
+        st.image(image, use_column_width=True)
+
+    with col2:
+        st.write(f"**ID:** {row['id']}")
+        st.write(f"**Tên:** {name}")
+        st.write(f"**Tác giả :** {row['author']}")
+        st.write(f"**Tổng số chương:** {row['total_chapter']}")
+        st.write(f"**Lượt thích:** {row['like']}")
+        st.write(f"**Đánh giá:** {row['rating']}/5")
+
+    if check_permission(cookies['token']):
+        with col3:
+            if st.button("Sửa Manga", key=f"edit_{row['id']}"):
+                pass
+            if st.button("Xóa Manga", key=f"del_{row['id']}"):
+                pass
+            if st.button("Thêm vào Yêu thích"):
+                pass
+            if st.button("Thích Manga này"):
+                pass
+            if st.button("Chấm điểm (Tối đa 5)"):
+                pass
+    else:
+        with col3:
+            if st.button("Thêm vào Yêu thích"):
+                pass
+            if st.button("Thích Manga này"):
+                pass
+            if st.button("Chấm điểm (Tối đa 5)"):
+                pass
+        st.write("---")
+    st.write(f"**Giới thiệu:** {row['introduction']}")
+
+    chapter_data = get_chapter_list(row['id'])
+
+    st.write("## Chapters")
+
+    if check_permission(cookies['token']):
+        for idx, chapter in chapter_data.iterrows():
+            col1, col2, col3, col4 = st.columns([1, 2, 1, 1])
+            col1.write(f"{chapter['number']}")
+            col2.write(f"{chapter['title']}")
+            if col3.button("Đọc", key=f"read_{idx}"):
+                st.experimental_set_query_params(name=name, chapter=chapter['number'])
+            col4.button("Sửa", key=f"edit_{idx}")
+            col4.button("Xóa", key=f"delete_{idx}")
+    else:
+        for idx, chapter in chapter_data.iterrows():
+            col1, col2, col3, col4 = st.columns([1, 2, 1, 1])
+            col1.write(f"{chapter['number']}")
+            col2.write(f"{chapter['title']}")
+            if col3.button("Đọc", key=f"read_{idx}"):
+                st.experimental_set_query_params(name=name, chapter=chapter['number'])
+
+
+def display_chapter_details(name, chapter_number, manga, cookies):
+    st.title(f"Bạn đang đọc Manga {name} chương {chapter_number}")
+
+    row = manga[manga['name'] == name].iloc[0]
+    chapter = get_chapter_list(row['id'])
+    chapter = chapter[chapter['number'] == int(chapter_number)].iloc[0]
+
+    images = get_image_chapter(chapter['id'])
+
+    st.write(f"## {row['name']} - Chapter {chapter['number']}: {chapter['title']}")
+
+    for idx, image in images.iterrows():
+        image = Image.open(image['src'])
+        st.image(image, use_column_width=True)
 
