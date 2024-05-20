@@ -8,3 +8,5 @@ from call_api.auth.login import *
 from call_api.auth.login import login
 from call_api.manga import *
 from io import BytesIO
+
+from call_api.chapter import *
