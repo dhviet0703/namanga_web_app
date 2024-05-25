@@ -23,6 +23,7 @@ def load_main(cookies):
 
             elif choice_admin == "Quản lý Manga":
                 menu_manga_admin = ["Thêm manga", "Sửa manga", "Xóa manga"]
+
                 choice_manga_admin = st.sidebar.selectbox("Quản lý Manga", menu_manga_admin)
                 if choice_manga_admin == "Thêm manga":
                     add_new_manga(cookies)
@@ -30,6 +31,7 @@ def load_main(cookies):
                     update_manga(cookies)
                 elif choice_manga_admin == "Xóa manga":
                     delete_manga(cookies)
+
             elif choice_admin == "Quản lý User":
                 pass
 
@@ -43,6 +45,5 @@ def load_main(cookies):
             cookies['logged_in'] = 'False'
             cookies.save()
             st.experimental_rerun()
-
     else:
         login_page(cookies)
